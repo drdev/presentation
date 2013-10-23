@@ -1,0 +1,344 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Проблемы и решения переноса больших проектов. Новая AllMoldova</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=792, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="shower/themes/ribbon/styles/screen.css">
+</head>
+<body class="list">
+
+	<header class="caption">
+		<h1>Проблемы и решения переноса больших проектов.</h1>
+		<p>Новая AllMoldova</p>
+	</header>
+
+	<section class="slide cover" id="cover"><div>
+		<h2>Проблемы и решения переноса больших проектов.</h2>
+		<p>Новая <a href="http://www.allmoldova.com/">AllMoldova</a></p>
+		<img src="pictures/cover.jpg" alt="">
+		<style>
+            #cover {
+                text-shadow: 0 0 3px rgba(0, 0, 0, .8   );
+            }
+			#cover h2 {
+				margin:30px 0 0;
+				color:#FFF;
+				text-align:center;
+				font-size:70px;
+				}
+			#cover p {
+				margin:10px 0 0;
+				text-align:center;
+				color:#FFF;
+				font-style:italic;
+				font-size:20px;
+				}
+				#cover p a {
+					color:#FFF;
+					}
+		</style>
+	</div></section>
+
+	<section class="slide"><div>
+		<h2>Причины переездов</h2>
+		<ol>
+			<li>Смена дизайна</li>
+			<li>Смена оборудования</li>
+			<li>Смена хостинга</li>
+            <li>Переход на новую программную платформу</li>
+		</ol>
+		<p class="note">От меньшего зла - к большему.</p>
+	</div></section>
+
+	<section class="slide"><div>
+		<h2>А в чем проблема!?</h2>
+		<ol>
+			<li class="next">Миграция данных</li>
+            <li class="next">Изменение схемы URL-ов
+                <ul>
+                    <li class="next">Hello, <s>world</s> bot!</li>
+                    <li class="next">Лайки!? Не, не слышал!</li>
+                    <li class="next">Внешние зависимости</li>
+                </ul>
+            </li>
+            <li class="next">Welcome, guest!</li>
+            <li class="next">Кешированая статика (<kbd>logo.png</kbd>, <kbd>styles.css</kbd>, <kbd>app.js</kbd>)</li>
+        </ol>
+	</div></section>
+
+	<section class="slide cover" id="what-to-be-done"><div>
+        <style>
+            #what-to-be-done {
+                background: url("pictures/what-is-to-be-done.jpg");
+            }
+        </style>
+	</div></section>
+
+    <section class="slide"><div>
+        <h2>Миграция БДанных</h2>
+
+        <ul>
+            <li>Cross-CMS migrate tools</li>
+            <li>CMS экспорт</li>
+            <li>Хэнд-мэйд</li>
+            <li>Средствами СУБД
+                <ul>
+                    <li><code>SELECT … INTO TABLE</code>, <code>INSERT INTO … SELECT</code></li>
+                    <li><kbd>mysqldump --xml | xsltproc</kbd></li>
+                    <li>DTS <em>(Data Transformation Services)</em></li>
+                </ul>
+            </li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>И статику тоже!*</h2>
+
+        <ul>
+            <li>Вынесите ее из дерева проекта, уже пора!</li>
+            <li>Создайте location в конфиге <br />
+                <code>location /s/ { alias /var/images/; }</code>
+            </li>
+            <li>CDN <em>(Content Delivery Network)</em></li>
+            <li><kbd>$config['gallery']['url']['prefix']</kbd></li>
+        </ul>
+
+        <p class="note">* <em>Особенно статику!</em></p>
+
+    </div></section>
+
+    <section class="slide" id="redirect"><div>
+        <h2>404? Отдай им 301!</h2>
+
+        <pre><code>GET /index.php?article_id=42 HTTP/1.1
+
+HTTP/1.1 301 Moved Permanently
+Location: http://www.allmoldova.com/article/how-redirects-work.pl</code></pre>
+
+        <ol>
+            <li>CMS/F умеет?</li>
+            <li>Добавь fallback-маршруты во framework <em>(Symfony, ZF)</em> <br>
+                <code>
+                    $config['routes']['lost'] = array(…)
+                </code>
+            </li>
+            <li>Веб-сервером <br>
+                <kbd>ErrorDocument 404 /lost.php</kbd>
+            </li>
+        </ol>
+
+        <style>
+                #redirect pre code {
+                    font-size: 18px;
+                    background: #EEEEEE;
+                    padding: 0 15px;
+                    line-height: 32px;
+                }
+        </style>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>А как же <s>Facebook</s> OpenGraph?</h2>
+
+        <p>Придется тащить URL старых дискуссий за собой</p>
+
+        <ol>
+            <li>Canonical Link Element для Google, Yahoo, MS<br />
+                <kbd>&lt;link rel="canonical" href="…" /&gt;</kbd>
+            </li>
+            <li>Для Facebook <br />
+                <kbd>&lt;meta property="og:url" content="…" /&gt;</kbd>
+                <kbd>&lt;fb:like-box href="…" /&gt;</kbd>
+            </li>
+        </ol>
+
+        <p><em>Только канонический URL!</em>
+            Уберите <kbd>?sort=price&amp;p=42&amp;sess=…</kbd>
+        </p>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>С чего начать?</h2>
+    </div></section>
+
+    <section class="slide shout" id="backup"><div>
+		<h2 class="next">Backup!</h2>
+	</div></section>
+
+    <section class="slide shout motivator"><div>
+        <img src="pictures/theres-no-backup-dad.jpg" class="place">
+    </div></section>
+
+    <section class="slide shout motivator"><div>
+        <img src="pictures/he-dropped-db.jpg" class="place">
+    </div></section>
+
+    <style>
+        .motivator, #backup {
+            background: #000;
+            }
+            #backup h2 {
+                color: #eee;
+                text-shadow: 0 0 15px rgba(255,255,255,.7);
+                }
+    </style>
+
+
+    <section class="slide"><div>
+        <h2>Time To Leave!</h2>
+
+        <ul>
+            <li>Time-To-Live = Time-To-Leave</li>
+            <li>86400? 24h? <em>300</em>!</li>
+        </ul>
+    </div></section>
+
+
+    <section class="slide"><div>
+        <h2>Создай окружение!</h2>
+        <ul>
+            <li>Расширения (extensions) языка <br />
+                <kbd>./configure --with-intl</kbd>
+            </li>
+            <li class="next">3<sup>rd</sup>-party библиотеки <br />
+                <kbd>composer install --no-dev</kbd>
+            </li>
+            <li class="next">Права<br />
+                <kbd>chown www:www $UPLOAD_DIR; chmod g+sw $UPLOAD_DIR</kbd>
+            </li>
+            <li class="next">Production-ready? <br />
+                <img src="pictures/ensure-production.png" alt=""/>
+            </li>
+        </ul>
+
+    </div></section>
+
+
+
+    <section class="slide"><div>
+        <h2>Будь первым!</h2>
+        <ul>
+            <li>Будь новым! <br />
+                <kbd><em class="next">new</em>.allmoldova.com</kbd>
+            </li>
+            <li class="next">Будь рядом!<br />
+                <kbd>/var/www/</kbd>, <kbd>/var/new/</kbd>
+            </li>
+
+            <li class="next">Будь везде! <br />
+                <em>Правило 5 кликов</em>
+            </li>
+
+            <li class="next">"Тяжелые" ссылки <br />
+                <kbd>$ ln <em class="next">-s</em> /var/www/uploads /var/new/uploads</kbd>
+            </li>
+        </ul>
+    </div></section>
+
+
+    <section class="slide shout" data-timing="1"><div>
+        <h2>На старт! <br />
+            <span class="next">Внимание!</span> <br />
+            <span class="next">Restart!</span>
+        </h2>
+    </div></section>
+
+    <section class="slide shout" id="maintenance"><div>
+        <style>
+            #maintenance {
+                background: #bcd75f url("pictures/error_503.png") no-repeat center;
+                }
+        </style>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Final touches</h2>
+
+        <ul>
+            <li>Rsync it!</li>
+            <li>Виджеты на месте?</li>
+            <li>Статистика собирается?</li>
+            <li class="next">Телефон молчит?</li>
+        </ul>
+    </div></section>
+
+    <section class="slide cover"><div>
+        <img src="pictures/allmoldova-current.png" alt=""/>
+    </div></section>
+
+    <section class="slide cover"><div>
+        <img src="pictures/allmoldova-new.png" alt=""/>
+    </div></section>
+
+
+    <section class="slide shout"><div>
+        <h2>Всё?</h2>
+    </div></section>
+
+
+    <section class="slide shout"><div>
+        <h2>Backup!</h2>
+
+        <p class="next" style="
+            position: absolute;
+            transform: translateY(-50%);
+            text-align: center;
+            width: 100%;
+            top: 70%;
+            color: #333;
+            left: 0;
+        ">На этот раз автоматический!</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>И еще по мелочам</h2>
+
+        <ul>
+            <li>Верните TTL назад</li>
+            <li>Уберите хлам</li>
+        </ul>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <img src="pictures/thats-all.gif" alt="" class="place"/>
+    </div></section>
+
+    <section class="slide shout"><div>
+		<h2>И так каждый раз!?</h2>
+	</div></section>
+
+    <section class="slide"><div>
+        <h2>Автоматизируй это!</h2>
+
+        <ul>
+            <li>Capistrano, Fabric, Puppet, Chef</li>
+            <li>Ant, Phing, Make</li>
+            <li>dpkg, ebuild, rpm. Repository = versioning!</li>
+        </ul>
+
+        <h2>Да что угодно, ты же программист!</h2>
+        <p>Просто не дай ошибиться себе в важный момент!</p>
+    </div></section>
+
+    <section class="slide cover" id="questions"><div>
+        <h2>Вопросы?</h2>
+        <img src="pictures/get-out.jpg" width="100%" alt="" class="place l b"/>
+        <style>
+            #questions {
+                text-shadow: 0 0 3px rgba(0, 0, 0, .8   );
+                background: #bcd75f;
+            }
+            #questions h2 {
+                margin:30px 0 0;
+                color:#FFF;
+                text-align:center;
+                font-size:120px;
+            }
+        </style>
+    </div></section>
+
+	<script src="shower/shower.min.js"></script>
+</body>
+</html>
